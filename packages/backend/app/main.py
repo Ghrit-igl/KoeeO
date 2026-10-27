@@ -86,6 +86,7 @@ async def health_check():
             "aerodynamics",
             "nuclear",
             "pathogen",
+            "aayu_quantum",
         ],
         "timestamp": time.time(),
     }
@@ -124,6 +125,10 @@ async def list_experiments():
                 "name": "pathogen",
                 "description": "Acinetobacter baumannii Lipid A biosynthesis LpxC active site & antibiotic re-sensitization",
             },
+            {
+                "name": "aayu_quantum",
+                "description": "AAYU Intent-to-Silicon Quantum Engine: Bell state entanglement, Grover search, and Cooley-Tukey FFT",
+            },
         ],
         "active": simulation_manager.list_experiments(),
     }
@@ -153,6 +158,41 @@ async def destroy_experiment(experiment_id: str):
         raise HTTPException(status_code=404, detail=f"Experiment not found: {experiment_id}")
 
     return {"message": f"Experiment {experiment_id} destroyed", "experiment_id": experiment_id}
+
+
+# ─── AAYU Intent-to-Silicon Endpoints ─────────────────────────────────
+
+@app.get("/api/aayu/system")
+async def get_aayu_system_info():
+    """Get AAYU engine runtime info and available standard libraries."""
+    from app.engine.aayu_bridge import AAYUBridge, AAYU_EXE
+    bridge = AAYUBridge()
+    try:
+        version = bridge.get_version()
+    except Exception as e:
+        version = f"AAYU v1.5.0 ({e})"
+
+    std_dir = r"D:\INTENT-TO-SILICON\std"
+    import os
+    modules = []
+    if os.path.exists(std_dir):
+        modules = [f for f in os.listdir(std_dir) if f.endswith(".aayu")]
+
+    return {
+        "engine": "AAYU Intent-to-Silicon",
+        "version": version,
+        "executable": AAYU_EXE,
+        "runtime": "Native Rust Bytecode VM | Embedded Compiler & JIT",
+        "architecture": "x86_64-pc-windows-msvc",
+        "features": [
+            "128-bit NaN-Boxed Hybrid Scalar Engine",
+            "Zero Hallucination Scoping via Explicit 'end' blocks",
+            "Pure Rust Silicon Virtual Machine",
+            "Native Quantum Teleportation & Grover Search",
+            "Cooley-Tukey Radix-2 FFT Spectrum Analyzer",
+        ],
+        "standard_modules": sorted(modules),
+    }
 
 
 # ─── WebSocket Telemetry ──────────────────────────────────────────────

@@ -15,6 +15,7 @@ import { BlackHoleViz } from './BlackHoleViz';
 import { AerodynamicsViz } from './AerodynamicsViz';
 import { NuclearViz } from './NuclearViz';
 import { PathogenViz } from './PathogenViz';
+import { AayuQuantumViz } from './AayuQuantumViz';
 import { BLOOM_CONFIG, VIGNETTE_CONFIG } from '../shaders/bloomPass';
 import type { ExperimentType, TelemetryFrame } from '../lib/types';
 
@@ -73,6 +74,8 @@ const ActiveVisualization: React.FC<{
       return <NuclearViz telemetry={telemetry} />;
     case 'pathogen':
       return <PathogenViz telemetry={telemetry} />;
+    case 'aayu_quantum':
+      return <AayuQuantumViz telemetry={telemetry} />;
     default:
       return null;
   }

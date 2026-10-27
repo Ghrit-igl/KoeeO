@@ -3,7 +3,7 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 import React, { useState } from 'react';
-import { Play, Square, Sliders, Dna, Orbit, Layers, CircleDot, Wind, Atom, Bug } from 'lucide-react';
+import { Play, Square, Sliders, Dna, Orbit, Layers, CircleDot, Wind, Atom, Bug, Cpu } from 'lucide-react';
 import type { UseSimulationReturn } from '../hooks/useSimulation';
 import type {
   ExperimentType,
@@ -14,6 +14,7 @@ import type {
   AerodynamicsParams,
   NuclearParams,
   PathogenParams,
+  AayuQuantumParams,
 } from '../lib/types';
 
 interface ExperimentControlsProps {
@@ -61,6 +62,12 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
     inhibitor_uM: 0.8,
   });
 
+  const [aayuParams, setAayuParams] = useState<AayuQuantumParams>({
+    grover_target: 3,
+    alpha: 0.6,
+    beta: 0.8,
+  });
+
   const handleLaunch = () => {
     let params: any;
     if (selectedType === 'mobius') params = mobiusParams;
@@ -70,6 +77,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
     else if (selectedType === 'aerodynamics') params = aeroParams;
     else if (selectedType === 'nuclear') params = nuclearParams;
     else if (selectedType === 'pathogen') params = pathogenParams;
+    else if (selectedType === 'aayu_quantum') params = aayuParams;
 
     simulation.create(selectedType, params);
   };
@@ -85,11 +93,31 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
         <div className="flex items-center gap-2 border-b border-hud-cyan/20 pb-2 mb-3">
           <Layers size={13} className="text-hud-cyan" />
           <span className="text-[11px] font-bold tracking-[0.2em] text-hud-cyan uppercase">
-            Experiment Matrix (7 Labs)
+            Experiment Matrix (8 Labs)
           </span>
         </div>
 
         <div className="grid grid-cols-1 gap-1.5 max-h-56 overflow-y-auto pr-1">
+          {/* AAYU Silicon Quantum Engine Option */}
+          <button
+            type="button"
+            onClick={() => setSelectedType('aayu_quantum')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'aayu_quantum'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <Cpu size={14} className={selectedType === 'aayu_quantum' ? 'text-hud-cyan animate-pulse' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider flex items-center gap-1.5">
+                <span>AAYU SILICON QUANTUM</span>
+                <span className="text-[8px] bg-cyan-950 text-cyan-400 px-1 py-0.5 rounded border border-cyan-800">NATIVE</span>
+              </div>
+              <div className="text-[9px] opacity-70">Bell State, Grover Search & Cooley-Tukey FFT</div>
+            </div>
+          </button>
+
           {/* Black Hole Option */}
           <button
             type="button"
@@ -411,6 +439,60 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
                 }
                 className="w-full accent-hud-cyan cursor-pointer"
               />
+            </div>
+          </div>
+        )}
+
+        {selectedType === 'aayu_quantum' && (
+          <div className="space-y-3 text-xs">
+            <div>
+              <label className="block text-[11px] text-hud-muted mb-1.5">
+                GROVER QUANTUM SEARCH TARGET STATE
+              </label>
+              <div className="grid grid-cols-4 gap-1.5">
+                {[
+                  { idx: 0, label: '|00⟩' },
+                  { idx: 1, label: '|01⟩' },
+                  { idx: 2, label: '|10⟩' },
+                  { idx: 3, label: '|11⟩' },
+                ].map((item) => (
+                  <button
+                    key={item.idx}
+                    type="button"
+                    onClick={() => setAayuParams({ ...aayuParams, grover_target: item.idx })}
+                    className={`py-1.5 px-2 rounded font-mono text-[11px] font-bold border transition-all ${
+                      aayuParams.grover_target === item.idx
+                        ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                        : 'bg-black/40 border-hud-cyan/20 text-hud-muted hover:border-hud-cyan/40'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              <div className="text-[9px] text-hud-muted/80 mt-1">
+                Amplifies target probability to 100% on silicon in 1 step
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>SUPERPOSITION ALPHA (α)</span>
+                <span className="text-hud-cyan font-bold">{aayuParams.alpha.toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="1.0"
+                step="0.05"
+                value={aayuParams.alpha}
+                onChange={(e) => setAayuParams({ ...aayuParams, alpha: parseFloat(e.target.value) })}
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+
+            <div className="p-2 rounded bg-cyan-950/30 border border-cyan-800/40 text-[9px] text-cyan-300">
+              ⚡ <strong>Intent-to-Silicon Engine:</strong> Direct AAYU AST bytecode execution with zero-wrap 128-bit NaN-boxed arithmetic and Cooley-Tukey Radix-2 FFT.
             </div>
           </div>
         )}

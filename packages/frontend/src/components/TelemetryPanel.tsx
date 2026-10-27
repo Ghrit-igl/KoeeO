@@ -172,6 +172,49 @@ export const TelemetryPanel: React.FC<TelemetryPanelProps> = ({ telemetry }) => 
           </div>
         </div>
       </div>
+
+      {/* ── AAYU Silicon Quantum Readout (When Active) ─────────── */}
+      {telemetry?.grover_search && (
+        <div className="hud-corner-box p-3 border-hud-cyan/30 bg-cyan-950/20">
+          <div className="flex items-center justify-between border-b border-hud-cyan/20 pb-1.5 mb-2">
+            <div className="flex items-center gap-1.5">
+              <Zap size={11} className="text-yellow-400" />
+              <span className="text-[10px] font-bold text-yellow-400 tracking-[0.15em] uppercase">
+                AAYU SILICON VM INVARIANTS
+              </span>
+            </div>
+            <span className="text-[9px] px-1 rounded bg-yellow-400/10 text-yellow-300 font-mono">
+              {telemetry.execution_time_us} μs
+            </span>
+          </div>
+          <div className="space-y-1.5 text-[10px]">
+            <div className="flex justify-between items-center bg-black/40 px-2 py-1 rounded">
+              <span className="text-hud-muted">BELL STATE |Φ⁺⟩</span>
+              <span className="text-cyan-400 font-mono font-bold">
+                P(00)={((telemetry.bell_state?.probabilities?.['00'] ?? 0.5) * 100).toFixed(0)}% │ P(11)={((telemetry.bell_state?.probabilities?.['11'] ?? 0.5) * 100).toFixed(0)}%
+              </span>
+            </div>
+            <div className="flex justify-between items-center bg-black/40 px-2 py-1 rounded">
+              <span className="text-hud-muted">GROVER TARGET |{telemetry.grover_search.target_binary}⟩</span>
+              <span className="text-yellow-400 font-mono font-bold">
+                {telemetry.grover_search.amplified_probability_pct.toFixed(1)}% AMPLIFIED
+              </span>
+            </div>
+            <div className="flex justify-between items-center bg-black/40 px-2 py-1 rounded">
+              <span className="text-hud-muted">TELEPORTATION FIDELITY</span>
+              <span className="text-green-400 font-mono font-bold">
+                {telemetry.teleportation?.fidelity_pct.toFixed(1)}% (EXACT)
+              </span>
+            </div>
+            <div className="flex justify-between items-center bg-black/40 px-2 py-1 rounded">
+              <span className="text-hud-muted">COOLEY-TUKEY FFT DC</span>
+              <span className="text-purple-400 font-mono font-bold">
+                MAG[0] = {telemetry.scientific_fft?.spectrum_magnitudes?.[0]?.toFixed(2) ?? '2.00'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -18,6 +18,7 @@ from app.engine.blackhole import generate_blackhole_telemetry
 from app.engine.aerodynamics import generate_aerodynamics_telemetry
 from app.engine.nuclear_chem import generate_nuclear_telemetry
 from app.engine.bio_pathogen import generate_pathogen_telemetry
+from app.engine.aayu_kernel import run_aayu_quantum_simulation
 
 
 class _Experiment:
@@ -57,6 +58,10 @@ class _Experiment:
             self._neutrons_n = params.get("neutrons_n", 184)
         elif exp_type == "pathogen":
             self._inhibitor_uM = params.get("inhibitor_uM", 0.8)
+        elif exp_type == "aayu_quantum":
+            self._grover_target = params.get("grover_target", 3)
+            self._alpha = params.get("alpha", 0.6)
+            self._beta = params.get("beta", 0.8)
 
     def step(self) -> dict:
         """Advance the experiment by one frame and return telemetry data."""
@@ -92,6 +97,13 @@ class _Experiment:
             )
         elif self.type == "pathogen":
             data = generate_pathogen_telemetry(frame=self.frame, inhibitor_uM=self._inhibitor_uM)
+        elif self.type == "aayu_quantum":
+            data = run_aayu_quantum_simulation(
+                target_qubit=self._grover_target,
+                alpha=self._alpha,
+                beta=self._beta,
+                frame=self.frame,
+            )
         else:
             data = {}
 
@@ -132,6 +144,7 @@ class SimulationManager:
             "aerodynamics",
             "nuclear",
             "pathogen",
+            "aayu_quantum",
         }
         if exp_type not in valid_types:
             raise ValueError(

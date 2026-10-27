@@ -10,7 +10,8 @@ export type ExperimentType =
   | 'blackhole'
   | 'aerodynamics'
   | 'nuclear'
-  | 'pathogen';
+  | 'pathogen'
+  | 'aayu_quantum';
 
 /** Experiment status lifecycle */
 export type ExperimentStatus = 'pending' | 'running' | 'completed' | 'error';
@@ -59,6 +60,13 @@ export interface PathogenParams {
   inhibitor_uM: number;
 }
 
+/** AAYU Silicon Quantum parameters */
+export interface AayuQuantumParams {
+  grover_target: number; // 0, 1, 2, or 3
+  alpha: number;         // 0.0 – 1.0
+  beta: number;          // 0.0 – 1.0
+}
+
 /** Union of all parameter types */
 export type ExperimentParams =
   | MobiusParams
@@ -67,7 +75,8 @@ export type ExperimentParams =
   | BlackHoleParams
   | AerodynamicsParams
   | NuclearParams
-  | PathogenParams;
+  | PathogenParams
+  | AayuQuantumParams;
 
 /** Experiment entity returned by the backend API */
 export interface Experiment {
@@ -136,6 +145,42 @@ export interface TelemetryFrame {
   // Pathogen-specific
   kinetics?: any;
   active_site_atoms?: any[];
+
+  // AAYU Quantum-specific
+  engine?: string;
+  execution_time_us?: number;
+  qubit_state?: {
+    alpha: number;
+    beta: number;
+    bloch_coords: { x: number; y: number; z: number; theta_rad: number; phi_rad: number };
+  };
+  bell_state?: {
+    name: string;
+    probabilities: { [key: string]: number };
+    entangled: boolean;
+  };
+  ghz_state?: {
+    name: string;
+    p000: number;
+    p111: number;
+    num_qubits: number;
+  };
+  grover_search?: {
+    target_state: number;
+    target_binary: string;
+    amplified_probability_pct: number;
+    is_exact_match: boolean;
+    distribution: number[];
+  };
+  teleportation?: {
+    protocol: string;
+    fidelity_pct: number;
+    verified: boolean;
+  };
+  scientific_fft?: {
+    algorithm: string;
+    spectrum_magnitudes: number[];
+  };
 
   fps?: number;
 }

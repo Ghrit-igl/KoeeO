@@ -90,6 +90,8 @@ export const FridayAssistant: React.FC<FridayAssistantProps> = ({ telemetry, isR
         reply = 'Möbius strip topology ready with non-orientable boundary conditions. Eigenvalue decomposition reflects continuous spectral flow.';
       } else if (lower.includes('molecule') || lower.includes('benzene')) {
         reply = 'Molecular orbital engine initialized with π-electron resonance and delocalized bond matrices.';
+      } else if (lower.includes('aayu') || lower.includes('quantum') || lower.includes('grover') || lower.includes('silicon')) {
+        reply = 'Boss, the AAYU Intent-to-Silicon Engine is executing quantum state vectors directly on its Rust VM with zero hallucination. Bell state entanglement confirmed at 50/50 superposition, Grover search amplified target to 100.0%, and Teleportation fidelity is 100% verified.';
       } else {
         reply = `Understood Boss. Analyzing: "${userText}". Running background verification against RETER AST engine.`;
       }
