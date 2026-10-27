@@ -19,6 +19,7 @@ from app.engine.aerodynamics import generate_aerodynamics_telemetry
 from app.engine.nuclear_chem import generate_nuclear_telemetry
 from app.engine.bio_pathogen import generate_pathogen_telemetry
 from app.engine.aayu_kernel import run_aayu_quantum_simulation
+from app.engine.aayu_cad_driver import run_aayu_cad_simulation
 
 
 class _Experiment:
@@ -62,6 +63,13 @@ class _Experiment:
             self._grover_target = params.get("grover_target", 3)
             self._alpha = params.get("alpha", 0.6)
             self._beta = params.get("beta", 0.8)
+        elif exp_type == "dynamic_cad":
+            self._prompt = params.get("prompt", "Kawasaki Ninja H2R Supercharged 998cc")
+            self._rpm = params.get("rpm", 14000.0)
+            self._boost_bar = params.get("boost_bar", 2.4)
+            self._piston_mat = params.get("piston_material", "titanium_ti6al4v")
+            self._supercharger_mat = params.get("supercharger_material", "forged_carbon")
+            self._exploded = params.get("exploded_factor", 0.0)
 
     def step(self) -> dict:
         """Advance the experiment by one frame and return telemetry data."""
@@ -102,6 +110,16 @@ class _Experiment:
                 target_qubit=self._grover_target,
                 alpha=self._alpha,
                 beta=self._beta,
+                frame=self.frame,
+            )
+        elif self.type == "dynamic_cad":
+            data = run_aayu_cad_simulation(
+                prompt=self._prompt,
+                rpm=self._rpm,
+                boost_bar=self._boost_bar,
+                piston_material=self._piston_mat,
+                supercharger_material=self._supercharger_mat,
+                exploded_factor=self._exploded,
                 frame=self.frame,
             )
         else:
@@ -145,6 +163,7 @@ class SimulationManager:
             "nuclear",
             "pathogen",
             "aayu_quantum",
+            "dynamic_cad",
         }
         if exp_type not in valid_types:
             raise ValueError(

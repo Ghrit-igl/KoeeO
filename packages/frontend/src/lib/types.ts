@@ -11,7 +11,8 @@ export type ExperimentType =
   | 'aerodynamics'
   | 'nuclear'
   | 'pathogen'
-  | 'aayu_quantum';
+  | 'aayu_quantum'
+  | 'dynamic_cad';
 
 /** Experiment status lifecycle */
 export type ExperimentStatus = 'pending' | 'running' | 'completed' | 'error';
@@ -67,6 +68,16 @@ export interface AayuQuantumParams {
   beta: number;          // 0.0 – 1.0
 }
 
+/** AAYU Dynamic CAD & Engineering parameters */
+export interface DynamicCadParams {
+  prompt: string;
+  rpm: number;
+  boost_bar: number;
+  piston_material: string;
+  supercharger_material: string;
+  exploded_factor: number;
+}
+
 /** Union of all parameter types */
 export type ExperimentParams =
   | MobiusParams
@@ -76,7 +87,8 @@ export type ExperimentParams =
   | AerodynamicsParams
   | NuclearParams
   | PathogenParams
-  | AayuQuantumParams;
+  | AayuQuantumParams
+  | DynamicCadParams;
 
 /** Experiment entity returned by the backend API */
 export interface Experiment {
@@ -180,6 +192,36 @@ export interface TelemetryFrame {
   scientific_fft?: {
     algorithm: string;
     spectrum_magnitudes: number[];
+  };
+
+  // Dynamic CAD & Engineering assembly
+  model_name?: string;
+  category?: string;
+  layout?: string;
+  description?: string;
+  exploded_factor?: number;
+  parts?: Array<{
+    id: string;
+    name: string;
+    material: string;
+    type: string;
+    pos: [number, number, number];
+    color: string;
+    is_stressed: boolean;
+  }>;
+  cad_telemetry?: {
+    rpm: number;
+    boost_bar: number;
+    horsepower: number;
+    torque_nm: number;
+    total_stress_mpa: number;
+    yield_mpa: number;
+    safety_factor: number;
+    failure_risk_pct: number;
+    temperature_c: number;
+    impeller_rpm: number;
+    mach_number: number;
+    airflow_cfm: number;
   };
 
   fps?: number;

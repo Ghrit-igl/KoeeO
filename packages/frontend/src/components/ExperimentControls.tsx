@@ -3,7 +3,7 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 import React, { useState } from 'react';
-import { Play, Square, Sliders, Dna, Orbit, Layers, CircleDot, Wind, Atom, Bug, Cpu } from 'lucide-react';
+import { Play, Square, Sliders, Dna, Orbit, Layers, CircleDot, Wind, Atom, Bug, Cpu, Wrench, Cog, Sparkles } from 'lucide-react';
 import type { UseSimulationReturn } from '../hooks/useSimulation';
 import type {
   ExperimentType,
@@ -15,6 +15,7 @@ import type {
   NuclearParams,
   PathogenParams,
   AayuQuantumParams,
+  DynamicCadParams,
 } from '../lib/types';
 
 interface ExperimentControlsProps {
@@ -73,6 +74,15 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({
     beta: 0.8,
   });
 
+  const [cadParams, setCadParams] = useState<DynamicCadParams>({
+    prompt: 'Kawasaki Ninja H2R Supercharged 998cc',
+    rpm: 14000,
+    boost_bar: 2.4,
+    piston_material: 'titanium_ti6al4v',
+    supercharger_material: 'forged_carbon',
+    exploded_factor: 0.0,
+  });
+
   const handleLaunch = () => {
     let params: any;
     if (selectedType === 'mobius') params = mobiusParams;
@@ -83,6 +93,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({
     else if (selectedType === 'nuclear') params = nuclearParams;
     else if (selectedType === 'pathogen') params = pathogenParams;
     else if (selectedType === 'aayu_quantum') params = aayuParams;
+    else if (selectedType === 'dynamic_cad') params = cadParams;
 
     simulation.create(selectedType, params);
   };
@@ -98,11 +109,31 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({
         <div className="flex items-center gap-2 border-b border-hud-cyan/20 pb-2 mb-3">
           <Layers size={13} className="text-hud-cyan" />
           <span className="text-[11px] font-bold tracking-[0.2em] text-hud-cyan uppercase">
-            Experiment Matrix (8 Labs)
+            Engineering & Science Matrix (9 Labs)
           </span>
         </div>
 
         <div className="grid grid-cols-1 gap-1.5 max-h-56 overflow-y-auto pr-1">
+          {/* Dynamic CAD & Stress Engine Option */}
+          <button
+            type="button"
+            onClick={() => onSelectType('dynamic_cad')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'dynamic_cad'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border shadow-[0_0_12px_rgba(0,240,255,0.3)]'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <Wrench size={14} className={selectedType === 'dynamic_cad' ? 'text-yellow-400 animate-spin' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider flex items-center gap-1.5">
+                <span>DYNAMIC CAD & STRESS LAB</span>
+                <span className="text-[8px] bg-yellow-950 text-yellow-400 px-1 py-0.5 rounded border border-yellow-700">USER INPUT</span>
+              </div>
+              <div className="text-[9px] opacity-70">Custom Machinery, Exploded View & Part Upgrades</div>
+            </div>
+          </button>
+
           {/* AAYU Silicon Quantum Engine Option */}
           <button
             type="button"
@@ -498,6 +529,138 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({
 
             <div className="p-2 rounded bg-cyan-950/30 border border-cyan-800/40 text-[9px] text-cyan-300">
               ⚡ <strong>Intent-to-Silicon Engine:</strong> Direct AAYU AST bytecode execution with zero-wrap 128-bit NaN-boxed arithmetic and Cooley-Tukey Radix-2 FFT.
+            </div>
+          </div>
+        )}
+
+        {selectedType === 'dynamic_cad' && (
+          <div className="space-y-3 text-xs">
+            {/* User Custom Model Input Bar */}
+            <div>
+              <label className="block text-[11px] text-hud-cyan font-bold mb-1 flex items-center justify-between">
+                <span>TARGET VEHICLE / MACHINERY</span>
+                <span className="text-[9px] text-yellow-400">AAYU RAG</span>
+              </label>
+              <input
+                type="text"
+                value={cadParams.prompt}
+                onChange={(e) => setCadParams({ ...cadParams, prompt: e.target.value })}
+                placeholder="e.g. Kawasaki Ninja H2R, Twin Turbo V8..."
+                className="w-full bg-[rgba(0,25,50,0.8)] border border-hud-cyan/40 text-hud-cyan rounded px-2.5 py-1.5 font-mono text-[11px] focus:outline-none focus:border-yellow-400 shadow-[0_0_10px_rgba(0,240,255,0.15)]"
+              />
+              {/* Quick Presets */}
+              <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                {[
+                  { label: 'Ninja H2R', query: 'Kawasaki Ninja H2R Supercharged 998cc', rpm: 14000, boost: 2.4 },
+                  { label: 'Twin-Turbo V8', query: '4.0L Twin-Turbo 90° Hot-V V8', rpm: 8500, boost: 1.9 },
+                  { label: 'SR-71 Jet Turbine', query: 'Pratt & Whitney J58 Afterburning Turbo-Ramjet', rpm: 7200, boost: 4.5 },
+                  { label: 'Ferrari V12', query: '6.5L 65° Naturally Aspirated V12', rpm: 9500, boost: 0.0 },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() =>
+                      setCadParams({
+                        ...cadParams,
+                        prompt: item.query,
+                        rpm: item.rpm,
+                        boost_bar: item.boost,
+                      })
+                    }
+                    className="text-[8px] bg-cyan-950/80 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-800 hover:border-hud-cyan"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Exploded View Slider */}
+            <div className="bg-cyan-950/20 p-2 rounded border border-hud-cyan/20">
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span className="text-yellow-400 font-bold">EXPLODED VIEW EXPANSION</span>
+                <span className="text-yellow-400 font-bold">{(cadParams.exploded_factor * 100).toFixed(0)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0.0"
+                max="1.0"
+                step="0.05"
+                value={cadParams.exploded_factor}
+                onChange={(e) => setCadParams({ ...cadParams, exploded_factor: parseFloat(e.target.value) })}
+                className="w-full accent-yellow-400 cursor-pointer"
+              />
+              <div className="text-[8px] text-gray-400 mt-0.5">
+                Pulls sub-assemblies apart with holographic leader lines
+              </div>
+            </div>
+
+            {/* Part Upgrade: Piston Material */}
+            <div>
+              <label className="block text-[11px] text-hud-muted mb-1">
+                COMPONENT UPGRADE: PISTON MATERIAL
+              </label>
+              <select
+                value={cadParams.piston_material}
+                onChange={(e) => setCadParams({ ...cadParams, piston_material: e.target.value })}
+                className="w-full bg-[rgba(0,25,50,0.8)] border border-hud-cyan/30 text-hud-cyan rounded px-2 py-1.5 font-mono text-xs focus:outline-none focus:border-hud-cyan"
+              >
+                <option value="forged_aluminum_7075">Forged Aluminum 7075-T6 (Yield: 505 MPa)</option>
+                <option value="titanium_ti6al4v">Ti-6Al-4V Grade 5 Titanium (Yield: 950 MPa)</option>
+                <option value="forged_carbon">Billet Forged Carbon Composite (Yield: 1200 MPa)</option>
+                <option value="silicon_nitride_ceramic">Silicon Nitride Si3N4 Ceramic (Yield: 850 MPa)</option>
+              </select>
+            </div>
+
+            {/* Part Upgrade: Supercharger Impeller */}
+            <div>
+              <label className="block text-[11px] text-hud-muted mb-1">
+                COMPONENT UPGRADE: SUPERCHARGER IMPELLER
+              </label>
+              <select
+                value={cadParams.supercharger_material}
+                onChange={(e) => setCadParams({ ...cadParams, supercharger_material: e.target.value })}
+                className="w-full bg-[rgba(0,25,50,0.8)] border border-hud-cyan/30 text-hud-cyan rounded px-2 py-1.5 font-mono text-xs focus:outline-none focus:border-hud-cyan"
+              >
+                <option value="billet_aluminum">5-Axis Billet Aluminum (CNC Machined)</option>
+                <option value="forged_carbon">Continuous Fiber Forged Carbon (Lightweight)</option>
+                <option value="inconel_718">Inconel 718 Nickel Superalloy (1100 MPa)</option>
+              </select>
+            </div>
+
+            {/* Operating Sliders: RPM & Boost */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <div className="flex justify-between text-[10px] text-hud-muted mb-1">
+                  <span>RPM</span>
+                  <span className="text-hud-cyan font-bold">{cadParams.rpm}</span>
+                </div>
+                <input
+                  type="range"
+                  min="4000"
+                  max="16000"
+                  step="500"
+                  value={cadParams.rpm}
+                  onChange={(e) => setCadParams({ ...cadParams, rpm: parseFloat(e.target.value) })}
+                  className="w-full accent-hud-cyan cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[10px] text-hud-muted mb-1">
+                  <span>BOOST (bar)</span>
+                  <span className="text-hud-cyan font-bold">{cadParams.boost_bar.toFixed(1)}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.0"
+                  max="3.5"
+                  step="0.1"
+                  value={cadParams.boost_bar}
+                  onChange={(e) => setCadParams({ ...cadParams, boost_bar: parseFloat(e.target.value) })}
+                  className="w-full accent-hud-cyan cursor-pointer"
+                />
+              </div>
             </div>
           </div>
         )}

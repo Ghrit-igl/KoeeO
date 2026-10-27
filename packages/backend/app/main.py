@@ -87,6 +87,7 @@ async def health_check():
             "nuclear",
             "pathogen",
             "aayu_quantum",
+            "dynamic_cad",
         ],
         "timestamp": time.time(),
     }
@@ -128,6 +129,10 @@ async def list_experiments():
             {
                 "name": "aayu_quantum",
                 "description": "AAYU Intent-to-Silicon Quantum Engine: Bell state entanglement, Grover search, and Cooley-Tukey FFT",
+            },
+            {
+                "name": "dynamic_cad",
+                "description": "AAYU Dynamic CAD & Engineering Engine: User prompts, exploded 3D assembly, and component stress upgrades",
             },
         ],
         "active": simulation_manager.list_experiments(),
@@ -193,6 +198,36 @@ async def get_aayu_system_info():
         ],
         "standard_modules": sorted(modules),
     }
+
+
+# ─── Dynamic Engineering & CAD Endpoints ──────────────────────────────
+
+class CadAnalyzeRequest(BaseModel):
+    prompt: str = Field(..., description="User engineering or science prompt/model name")
+    rpm: float = Field(14000.0, description="Operating RPM")
+    boost_bar: float = Field(2.4, description="Forced induction boost pressure")
+    piston_material: str = Field("titanium_ti6al4v", description="Piston material")
+    supercharger_material: str = Field("forged_carbon", description="Supercharger material")
+    exploded_factor: float = Field(0.0, description="Exploded view distance 0.0 to 1.0")
+
+
+@app.post("/api/cad/analyze")
+async def analyze_cad_model(request: CadAnalyzeRequest):
+    """
+    Dynamically analyze a user-requested machine, vehicle, or engine model
+    using the AAYU Intent-to-Silicon Physics VM.
+    """
+    from app.engine.aayu_cad_driver import run_aayu_cad_simulation
+    res = run_aayu_cad_simulation(
+        prompt=request.prompt,
+        rpm=request.rpm,
+        boost_bar=request.boost_bar,
+        piston_material=request.piston_material,
+        supercharger_material=request.supercharger_material,
+        exploded_factor=request.exploded_factor,
+        frame=0,
+    )
+    return res
 
 
 # ─── WebSocket Telemetry ──────────────────────────────────────────────

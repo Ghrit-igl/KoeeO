@@ -16,6 +16,7 @@ import { AerodynamicsViz } from './AerodynamicsViz';
 import { NuclearViz } from './NuclearViz';
 import { PathogenViz } from './PathogenViz';
 import { AayuQuantumViz } from './AayuQuantumViz';
+import { DynamicCadViz } from './DynamicCadViz';
 import { BLOOM_CONFIG, VIGNETTE_CONFIG } from '../shaders/bloomPass';
 import type { ExperimentType, TelemetryFrame } from '../lib/types';
 
@@ -76,6 +77,8 @@ const ActiveVisualization: React.FC<{
       return <PathogenViz telemetry={telemetry} />;
     case 'aayu_quantum':
       return <AayuQuantumViz telemetry={telemetry} />;
+    case 'dynamic_cad':
+      return <DynamicCadViz telemetry={telemetry} />;
     default:
       return null;
   }
@@ -152,6 +155,7 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({
       {experimentType && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 text-[10px] text-hud-cyan tracking-[0.25em] uppercase bg-black/80 px-4 py-1.5 rounded-full border border-hud-cyan/30 shadow-[0_0_15px_rgba(0,240,255,0.2)] font-mono pointer-events-none">
           {experimentType === 'aayu_quantum' && '⚡ AAYU SILICON QUANTUM ENGINE'}
+          {experimentType === 'dynamic_cad' && '🛠️ AAYU DYNAMIC CAD & STRESS HOLOGRAPHIC ASSEMBLY'}
           {experimentType === 'blackhole' && '● GENERAL RELATIVITY SCHWARZSCHILD BLACK HOLE'}
           {experimentType === 'aerodynamics' && '༄ BUTTERFLY LEV UNSTEADY AERODYNAMICS'}
           {experimentType === 'nuclear' && '⚛ SUPERHEAVY ISLAND OF STABILITY (Z=126, N=184)'}

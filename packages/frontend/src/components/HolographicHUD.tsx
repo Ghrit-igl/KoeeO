@@ -18,7 +18,7 @@ interface HolographicHUDProps {
 
 export const HolographicHUD: React.FC<HolographicHUDProps> = ({ simulation }) => {
   const [timestamp, setTimestamp] = useState(new Date());
-  const [selectedType, setSelectedType] = useState<ExperimentType>('aayu_quantum');
+  const [selectedType, setSelectedType] = useState<ExperimentType>('dynamic_cad');
 
   // Update timestamp every second
   useEffect(() => {

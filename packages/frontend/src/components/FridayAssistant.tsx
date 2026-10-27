@@ -92,6 +92,8 @@ export const FridayAssistant: React.FC<FridayAssistantProps> = ({ telemetry, isR
         reply = 'Molecular orbital engine initialized with π-electron resonance and delocalized bond matrices.';
       } else if (lower.includes('aayu') || lower.includes('quantum') || lower.includes('grover') || lower.includes('silicon')) {
         reply = 'Boss, the AAYU Intent-to-Silicon Engine is executing quantum state vectors directly on its Rust VM with zero hallucination. Bell state entanglement confirmed at 50/50 superposition, Grover search amplified target to 100.0%, and Teleportation fidelity is 100% verified.';
+      } else if (lower.includes('bike') || lower.includes('kawasaki') || lower.includes('h2r') || lower.includes('engine') || lower.includes('cad') || lower.includes('piston') || lower.includes('supercharger') || lower.includes('part') || lower.includes('upgrade')) {
+        reply = 'Boss, the AAYU Dynamic CAD Engine has rendered the full assembly in the central bay. All 7 sub-assemblies isolated. Impeller spinning at Mach 1.36 tip speed. Piston crown stress analyzed on silicon VM. Ready for component upgrade or exploded-view expansion.';
       } else {
         reply = `Understood Boss. Analyzing: "${userText}". Running background verification against RETER AST engine.`;
       }
