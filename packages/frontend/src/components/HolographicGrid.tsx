@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * HolographicGrid.tsx — Background holographic grid plane with scan effect
- * Cyan grid lines fading to transparent at edges with subtle pulse
+ * HolographicGrid.tsx — Tony Stark Holographic Projector Table & Grid Base
+ * Cyan grid lines, rotating emitter rings, and vertical projection light cone.
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 import React, { useRef, useMemo } from 'react';
@@ -38,17 +38,17 @@ const gridFragmentShader = /* glsl */ `
     float fineGridLine = 1.0 - smoothstep(0.0, 0.015, fineLine);
 
     // Distance fade from center
-    float dist = length(vWorldPos.xz) / 15.0;
+    float dist = length(vWorldPos.xz) / 16.0;
     float fade = 1.0 - smoothstep(0.2, 1.0, dist);
 
     // Pulse effect
-    float pulse = 0.8 + 0.2 * sin(uTime * 0.5 + dist * 3.0);
+    float pulse = 0.85 + 0.15 * sin(uTime * 0.6 + dist * 3.0);
 
     // Scan ring expanding outward
-    float ring = abs(dist - fract(uTime * 0.15));
-    float ringGlow = smoothstep(0.05, 0.0, ring) * 0.5;
+    float ring = abs(dist - fract(uTime * 0.12));
+    float ringGlow = smoothstep(0.06, 0.0, ring) * 0.45;
 
-    float alpha = (gridLine * 0.3 + fineGridLine * 0.08 + ringGlow) * fade * pulse;
+    float alpha = (gridLine * 0.35 + fineGridLine * 0.1 + ringGlow) * fade * pulse;
 
     gl_FragColor = vec4(uColor, alpha);
   }
@@ -56,6 +56,9 @@ const gridFragmentShader = /* glsl */ `
 
 export const HolographicGrid: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const outerRingRef = useRef<THREE.Mesh>(null);
+  const innerRingRef = useRef<THREE.Mesh>(null);
+  const coneRef = useRef<THREE.Mesh>(null);
 
   const uniforms = useMemo(
     () => ({
@@ -66,25 +69,88 @@ export const HolographicGrid: React.FC = () => {
   );
 
   useFrame((state) => {
-    uniforms.uTime.value = state.clock.elapsedTime;
+    const t = state.clock.elapsedTime;
+    uniforms.uTime.value = t;
+
+    if (outerRingRef.current) {
+      outerRingRef.current.rotation.z = t * 0.2;
+    }
+    if (innerRingRef.current) {
+      innerRingRef.current.rotation.z = -t * 0.35;
+    }
+    if (coneRef.current) {
+      const p = 0.08 + Math.sin(t * 1.5) * 0.02;
+      (coneRef.current.material as THREE.MeshBasicMaterial).opacity = p;
+    }
   });
 
   return (
-    <mesh
-      ref={meshRef}
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, -2, 0]}
-      receiveShadow
-    >
-      <planeGeometry args={[40, 40, 1, 1]} />
-      <shaderMaterial
-        vertexShader={gridVertexShader}
-        fragmentShader={gridFragmentShader}
-        uniforms={uniforms}
-        transparent
-        side={THREE.DoubleSide}
-        depthWrite={false}
-      />
-    </mesh>
+    <group position={[0, -2, 0]}>
+      {/* ── 1. Holographic Floor Grid ────────────────────────────── */}
+      <mesh
+        ref={meshRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[44, 44, 1, 1]} />
+        <shaderMaterial
+          vertexShader={gridVertexShader}
+          fragmentShader={gridFragmentShader}
+          uniforms={uniforms}
+          transparent
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* ── 2. Stark Projector Emitter Base Rings ─────────────────── */}
+      <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        {/* Outer Ring */}
+        <mesh ref={outerRingRef}>
+          <ringGeometry args={[4.2, 4.3, 64]} />
+          <meshBasicMaterial
+            color="#00f0ff"
+            side={THREE.DoubleSide}
+            transparent
+            opacity={0.65}
+          />
+        </mesh>
+
+        {/* Inner Ring */}
+        <mesh ref={innerRingRef}>
+          <ringGeometry args={[3.2, 3.26, 48]} />
+          <meshBasicMaterial
+            color="#00ffff"
+            side={THREE.DoubleSide}
+            transparent
+            opacity={0.5}
+          />
+        </mesh>
+
+        {/* Focal Center Point */}
+        <mesh>
+          <ringGeometry args={[0.9, 0.95, 32]} />
+          <meshBasicMaterial
+            color="#38bdf8"
+            side={THREE.DoubleSide}
+            transparent
+            opacity={0.4}
+          />
+        </mesh>
+      </group>
+
+      {/* ── 3. Vertical Projection Light Column ──────────────────── */}
+      <mesh ref={coneRef} position={[0, 3.0, 0]}>
+        <cylinderGeometry args={[2.8, 4.3, 6.0, 32, 1, true]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={0.08}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
   );
 };

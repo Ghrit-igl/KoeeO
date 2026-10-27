@@ -150,8 +150,13 @@ export const SimulationCanvas: React.FC<SimulationCanvasProps> = ({
 
       {/* ── Experiment type label overlay ──────────────────────────────── */}
       {experimentType && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 text-[10px] text-hud-cyan/60 tracking-[0.3em] uppercase">
-          {experimentType === 'mobius' && '◎ MÖBIUS TOPOLOGY SIMULATION'}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 text-[10px] text-hud-cyan tracking-[0.25em] uppercase bg-black/80 px-4 py-1.5 rounded-full border border-hud-cyan/30 shadow-[0_0_15px_rgba(0,240,255,0.2)] font-mono pointer-events-none">
+          {experimentType === 'aayu_quantum' && '⚡ AAYU SILICON QUANTUM ENGINE'}
+          {experimentType === 'blackhole' && '● GENERAL RELATIVITY SCHWARZSCHILD BLACK HOLE'}
+          {experimentType === 'aerodynamics' && '༄ BUTTERFLY LEV UNSTEADY AERODYNAMICS'}
+          {experimentType === 'nuclear' && '⚛ SUPERHEAVY ISLAND OF STABILITY (Z=126, N=184)'}
+          {experimentType === 'pathogen' && '☣ A. BAUMANNII LPXC INHIBITOR DISCOVERY'}
+          {experimentType === 'mobius' && '◎ MÖBIUS TOPOLOGICAL MANIFOLD'}
           {experimentType === 'molecular' && '⬡ MOLECULAR ORBITAL ANALYSIS'}
           {experimentType === 'particles' && '✦ N-BODY PARTICLE DYNAMICS'}
         </div>

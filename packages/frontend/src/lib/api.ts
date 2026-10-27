@@ -25,10 +25,19 @@ export async function createExperiment(
   const res = await fetch(`${API_BASE}/api/experiments`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type, params }),
+    body: JSON.stringify({ type, parameters: params }),
   });
-  if (!res.ok) throw new Error(`Failed to create experiment: ${res.statusText}`);
-  return res.json();
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to create experiment (${res.status}): ${errorText}`);
+  }
+  const data = await res.json();
+  return {
+    id: data.experiment_id || data.id,
+    type: data.type || type,
+    params,
+    status: 'running',
+  };
 }
 
 /**

@@ -10,6 +10,7 @@ import { TelemetryPanel } from './TelemetryPanel';
 import { ExperimentControls } from './ExperimentControls';
 import { FridayAssistant } from './FridayAssistant';
 import type { UseSimulationReturn } from '../hooks/useSimulation';
+import type { ExperimentType } from '../lib/types';
 
 interface HolographicHUDProps {
   simulation: UseSimulationReturn;
@@ -17,6 +18,7 @@ interface HolographicHUDProps {
 
 export const HolographicHUD: React.FC<HolographicHUDProps> = ({ simulation }) => {
   const [timestamp, setTimestamp] = useState(new Date());
+  const [selectedType, setSelectedType] = useState<ExperimentType>('aayu_quantum');
 
   // Update timestamp every second
   useEffect(() => {
@@ -86,13 +88,17 @@ export const HolographicHUD: React.FC<HolographicHUDProps> = ({ simulation }) =>
       <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Left Sidebar: Experiment Controls */}
         <aside className="w-72 flex-shrink-0 border-r border-hud-cyan/10 overflow-y-auto">
-          <ExperimentControls simulation={simulation} />
+          <ExperimentControls
+            simulation={simulation}
+            selectedType={selectedType}
+            onSelectType={setSelectedType}
+          />
         </aside>
 
         {/* Center: 3D Canvas */}
         <main className="flex-1 relative">
           <SimulationCanvas
-            experimentType={simulation.experiment?.type ?? null}
+            experimentType={simulation.experiment?.type ?? selectedType}
             telemetry={simulation.telemetry}
           />
         </main>

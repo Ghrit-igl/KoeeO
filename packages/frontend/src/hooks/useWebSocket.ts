@@ -45,7 +45,12 @@ export function useWebSocket(experimentId: string | null): UseWebSocketReturn {
     ws.onmessage = (event) => {
       if (!mountedRef.current) return;
       try {
-        const frame: TelemetryFrame = JSON.parse(event.data);
+        const raw = JSON.parse(event.data);
+        // Unpack payload: merge outer frame metadata with inner scientific data
+        const frame: TelemetryFrame = {
+          ...raw,
+          ...(raw.data || {}),
+        };
         setData(frame);
       } catch (e) {
         console.error('[WS] Failed to parse telemetry frame:', e);

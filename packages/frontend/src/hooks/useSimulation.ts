@@ -42,14 +42,7 @@ export function useSimulation(): UseSimulationReturn {
       setExperiment(exp);
     } catch (err) {
       console.error('[Simulation] Failed to create experiment:', err);
-      // Create a mock experiment for demo when backend is offline
-      const mockId = `mock-${Date.now()}`;
-      setExperiment({
-        id: mockId,
-        type,
-        params,
-        status: 'running',
-      });
+      setExperiment(null);
     } finally {
       setIsLoading(false);
     }

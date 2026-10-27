@@ -19,10 +19,15 @@ import type {
 
 interface ExperimentControlsProps {
   simulation: UseSimulationReturn;
+  selectedType: ExperimentType;
+  onSelectType: (t: ExperimentType) => void;
 }
 
-export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulation }) => {
-  const [selectedType, setSelectedType] = useState<ExperimentType>('blackhole');
+export const ExperimentControls: React.FC<ExperimentControlsProps> = ({
+  simulation,
+  selectedType,
+  onSelectType,
+}) => {
 
   // Params state
   const [mobiusParams, setMobiusParams] = useState<MobiusParams>({
@@ -101,7 +106,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* AAYU Silicon Quantum Engine Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('aayu_quantum')}
+            onClick={() => onSelectType('aayu_quantum')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'aayu_quantum'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -121,7 +126,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Black Hole Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('blackhole')}
+            onClick={() => onSelectType('blackhole')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'blackhole'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -138,7 +143,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Butterfly Aerodynamics Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('aerodynamics')}
+            onClick={() => onSelectType('aerodynamics')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'aerodynamics'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -155,7 +160,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Nuclear Island of Stability Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('nuclear')}
+            onClick={() => onSelectType('nuclear')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'nuclear'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -172,7 +177,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Pathogen Root Cause Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('pathogen')}
+            onClick={() => onSelectType('pathogen')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'pathogen'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -189,7 +194,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Möbius Strip Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('mobius')}
+            onClick={() => onSelectType('mobius')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'mobius'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -206,7 +211,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Molecular Orbitals Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('molecular')}
+            onClick={() => onSelectType('molecular')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'molecular'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
@@ -223,7 +228,7 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           {/* Particle Dynamics Option */}
           <button
             type="button"
-            onClick={() => setSelectedType('particles')}
+            onClick={() => onSelectType('particles')}
             className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'particles'
                 ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'

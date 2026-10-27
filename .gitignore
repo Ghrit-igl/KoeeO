@@ -29,3 +29,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# AAYU Runtime Temp
+_runtime_quantum_*.aayu
