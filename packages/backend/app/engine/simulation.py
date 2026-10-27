@@ -14,6 +14,10 @@ from typing import Any
 from app.engine.mobius import generate_mobius_mesh
 from app.engine.molecular import get_molecule
 from app.engine.particles import ParticleSystem
+from app.engine.blackhole import generate_blackhole_telemetry
+from app.engine.aerodynamics import generate_aerodynamics_telemetry
+from app.engine.nuclear_chem import generate_nuclear_telemetry
+from app.engine.bio_pathogen import generate_pathogen_telemetry
 
 
 class _Experiment:
@@ -43,6 +47,16 @@ class _Experiment:
                 softening=params.get("softening", 0.1),
                 seed=params.get("seed", None),
             )
+        elif exp_type == "blackhole":
+            self._mass_solar = params.get("mass_solar", 10.0)
+        elif exp_type == "aerodynamics":
+            self._temperature_c = params.get("temperature_c", 24.0)
+            self._frequency_hz = params.get("frequency_hz", 12.0)
+        elif exp_type == "nuclear":
+            self._protons_z = params.get("protons_z", 120)
+            self._neutrons_n = params.get("neutrons_n", 184)
+        elif exp_type == "pathogen":
+            self._inhibitor_uM = params.get("inhibitor_uM", 0.8)
 
     def step(self) -> dict:
         """Advance the experiment by one frame and return telemetry data."""
@@ -62,6 +76,22 @@ class _Experiment:
         elif self.type == "particles":
             self._particle_system.step()
             data = self._particle_system.get_state()
+        elif self.type == "blackhole":
+            data = generate_blackhole_telemetry(frame=self.frame, mass_solar=self._mass_solar)
+        elif self.type == "aerodynamics":
+            data = generate_aerodynamics_telemetry(
+                frame=self.frame,
+                temperature_c=self._temperature_c,
+                frequency_hz=self._frequency_hz,
+            )
+        elif self.type == "nuclear":
+            data = generate_nuclear_telemetry(
+                frame=self.frame,
+                protons_z=self._protons_z,
+                neutrons_n=self._neutrons_n,
+            )
+        elif self.type == "pathogen":
+            data = generate_pathogen_telemetry(frame=self.frame, inhibitor_uM=self._inhibitor_uM)
         else:
             data = {}
 
@@ -94,7 +124,15 @@ class SimulationManager:
         Raises:
             ValueError: If exp_type is not recognized.
         """
-        valid_types = {"mobius", "molecular", "particles"}
+        valid_types = {
+            "mobius",
+            "molecular",
+            "particles",
+            "blackhole",
+            "aerodynamics",
+            "nuclear",
+            "pathogen",
+        }
         if exp_type not in valid_types:
             raise ValueError(
                 f"Unknown experiment type: '{exp_type}'. "

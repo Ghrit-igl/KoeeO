@@ -11,6 +11,10 @@ import { HolographicGrid } from './HolographicGrid';
 import { MobiusViz } from './MobiusViz';
 import { MolecularViz } from './MolecularViz';
 import { ParticleViz } from './ParticleViz';
+import { BlackHoleViz } from './BlackHoleViz';
+import { AerodynamicsViz } from './AerodynamicsViz';
+import { NuclearViz } from './NuclearViz';
+import { PathogenViz } from './PathogenViz';
 import { BLOOM_CONFIG, VIGNETTE_CONFIG } from '../shaders/bloomPass';
 import type { ExperimentType, TelemetryFrame } from '../lib/types';
 
@@ -29,18 +33,19 @@ const IdlePrompt: React.FC = () => (
       <div className="text-hud-muted text-xs tracking-[0.2em]">
         CHOOSE A SIMULATION FROM THE LEFT PANEL TO BEGIN
       </div>
-      <div className="flex gap-6 mt-8 justify-center">
+      <div className="flex gap-4 mt-6 justify-center flex-wrap">
         {[
-          { icon: '◎', label: 'MÖBIUS TOPOLOGY' },
-          { icon: '⬡', label: 'MOLECULAR ORBITALS' },
-          { icon: '✦', label: 'PARTICLE DYNAMICS' },
+          { icon: '●', label: 'SCHWARZSCHILD BLACK HOLE' },
+          { icon: '༄', label: 'BUTTERFLY LEV' },
+          { icon: '⚛', label: 'ISLAND OF STABILITY' },
+          { icon: '☣', label: 'LPXC PATHOGEN INHIBITOR' },
         ].map((item) => (
           <div
             key={item.label}
-            className="hud-panel hud-border-glow px-5 py-4 text-center cursor-default hover:border-hud-cyan/40 transition-all duration-300"
+            className="hud-panel hud-border-glow px-4 py-3 text-center cursor-default hover:border-hud-cyan/40 transition-all duration-300"
           >
-            <div className="text-3xl text-hud-cyan mb-2 hud-glow-text">{item.icon}</div>
-            <div className="text-[10px] text-hud-muted tracking-[0.15em]">{item.label}</div>
+            <div className="text-2xl text-hud-cyan mb-1 hud-glow-text">{item.icon}</div>
+            <div className="text-[9px] text-hud-muted tracking-[0.15em]">{item.label}</div>
           </div>
         ))}
       </div>
@@ -60,6 +65,14 @@ const ActiveVisualization: React.FC<{
       return <MolecularViz telemetry={telemetry} />;
     case 'particles':
       return <ParticleViz telemetry={telemetry} />;
+    case 'blackhole':
+      return <BlackHoleViz telemetry={telemetry} />;
+    case 'aerodynamics':
+      return <AerodynamicsViz telemetry={telemetry} />;
+    case 'nuclear':
+      return <NuclearViz telemetry={telemetry} />;
+    case 'pathogen':
+      return <PathogenViz telemetry={telemetry} />;
     default:
       return null;
   }

@@ -3,13 +3,17 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 import React, { useState } from 'react';
-import { Play, Square, Sliders, Dna, Orbit, Layers } from 'lucide-react';
+import { Play, Square, Sliders, Dna, Orbit, Layers, CircleDot, Wind, Atom, Bug } from 'lucide-react';
 import type { UseSimulationReturn } from '../hooks/useSimulation';
 import type {
   ExperimentType,
   MobiusParams,
   MolecularParams,
   ParticleParams,
+  BlackHoleParams,
+  AerodynamicsParams,
+  NuclearParams,
+  PathogenParams,
 } from '../lib/types';
 
 interface ExperimentControlsProps {
@@ -17,23 +21,21 @@ interface ExperimentControlsProps {
 }
 
 export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulation }) => {
-  const [selectedType, setSelectedType] = useState<ExperimentType>('mobius');
+  const [selectedType, setSelectedType] = useState<ExperimentType>('blackhole');
 
-  // Mobius params state
+  // Params state
   const [mobiusParams, setMobiusParams] = useState<MobiusParams>({
     twist_factor: 1.0,
     resolution: 32,
     deformation_speed: 1.0,
   });
 
-  // Molecular params state
   const [molecularParams, setMolecularParams] = useState<MolecularParams>({
     molecule: 'C6H6',
     orbital_scale: 1.0,
     vibration_amplitude: 0.2,
   });
 
-  // Particle params state
   const [particleParams, setParticleParams] = useState<ParticleParams>({
     num_particles: 50,
     force_type: 'gravity',
@@ -41,11 +43,33 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
     softening: 0.1,
   });
 
+  const [blackholeParams, setBlackholeParams] = useState<BlackHoleParams>({
+    mass_solar: 10.0,
+  });
+
+  const [aeroParams, setAeroParams] = useState<AerodynamicsParams>({
+    temperature_c: 25.0,
+    frequency_hz: 12.0,
+  });
+
+  const [nuclearParams, setNuclearParams] = useState<NuclearParams>({
+    protons_z: 120,
+    neutrons_n: 184,
+  });
+
+  const [pathogenParams, setPathogenParams] = useState<PathogenParams>({
+    inhibitor_uM: 0.8,
+  });
+
   const handleLaunch = () => {
-    let params;
+    let params: any;
     if (selectedType === 'mobius') params = mobiusParams;
     else if (selectedType === 'molecular') params = molecularParams;
-    else params = particleParams;
+    else if (selectedType === 'particles') params = particleParams;
+    else if (selectedType === 'blackhole') params = blackholeParams;
+    else if (selectedType === 'aerodynamics') params = aeroParams;
+    else if (selectedType === 'nuclear') params = nuclearParams;
+    else if (selectedType === 'pathogen') params = pathogenParams;
 
     simulation.create(selectedType, params);
   };
@@ -61,25 +85,93 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
         <div className="flex items-center gap-2 border-b border-hud-cyan/20 pb-2 mb-3">
           <Layers size={13} className="text-hud-cyan" />
           <span className="text-[11px] font-bold tracking-[0.2em] text-hud-cyan uppercase">
-            Experiment Matrix
+            Experiment Matrix (7 Labs)
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-1.5 max-h-56 overflow-y-auto pr-1">
+          {/* Black Hole Option */}
+          <button
+            type="button"
+            onClick={() => setSelectedType('blackhole')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'blackhole'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <CircleDot size={14} className={selectedType === 'blackhole' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider">SCHWARZSCHILD BLACK HOLE</div>
+              <div className="text-[9px] opacity-70">Photon Sphere (3M) & Geodesics</div>
+            </div>
+          </button>
+
+          {/* Butterfly Aerodynamics Option */}
+          <button
+            type="button"
+            onClick={() => setSelectedType('aerodynamics')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'aerodynamics'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <Wind size={14} className={selectedType === 'aerodynamics' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider">BUTTERFLY AERODYNAMICS</div>
+              <div className="text-[9px] opacity-70">Navier-Stokes LEV & Sutherland Law</div>
+            </div>
+          </button>
+
+          {/* Nuclear Island of Stability Option */}
+          <button
+            type="button"
+            onClick={() => setSelectedType('nuclear')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'nuclear'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <Atom size={14} className={selectedType === 'nuclear' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider">ISLAND OF STABILITY</div>
+              <div className="text-[9px] opacity-70">Bethe-Weizsäcker SEMF (Z=120, 126)</div>
+            </div>
+          </button>
+
+          {/* Pathogen Root Cause Option */}
+          <button
+            type="button"
+            onClick={() => setSelectedType('pathogen')}
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
+              selectedType === 'pathogen'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
+                : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
+            }`}
+          >
+            <Bug size={14} className={selectedType === 'pathogen' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <div>
+              <div className="text-[11px] font-bold tracking-wider">A. BAUMANNII LPXC INHIBITION</div>
+              <div className="text-[9px] opacity-70">Lipid A Root-Cause & Zinc Active Site</div>
+            </div>
+          </button>
+
           {/* Möbius Strip Option */}
           <button
             type="button"
             onClick={() => setSelectedType('mobius')}
-            className={`flex items-center gap-3 p-2.5 rounded border transition-all text-left ${
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'mobius'
-                ? 'bg-hud-cyan/15 border-hud-cyan text-hud-cyan hud-glow-border'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
                 : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
             }`}
           >
-            <Orbit size={16} className={selectedType === 'mobius' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <Orbit size={14} className={selectedType === 'mobius' ? 'text-hud-cyan' : 'text-hud-muted'} />
             <div>
-              <div className="text-xs font-bold tracking-wider">INVERTED MÖBIUS</div>
-              <div className="text-[10px] opacity-70">Topological Eigenvalues & Deformation</div>
+              <div className="text-[11px] font-bold tracking-wider">INVERTED MÖBIUS</div>
+              <div className="text-[9px] opacity-70">Topological Eigenvalues & Deformation</div>
             </div>
           </button>
 
@@ -87,16 +179,16 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           <button
             type="button"
             onClick={() => setSelectedType('molecular')}
-            className={`flex items-center gap-3 p-2.5 rounded border transition-all text-left ${
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'molecular'
-                ? 'bg-hud-cyan/15 border-hud-cyan text-hud-cyan hud-glow-border'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
                 : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
             }`}
           >
-            <Dna size={16} className={selectedType === 'molecular' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <Dna size={14} className={selectedType === 'molecular' ? 'text-hud-cyan' : 'text-hud-muted'} />
             <div>
-              <div className="text-xs font-bold tracking-wider">MOLECULAR ORBITAL</div>
-              <div className="text-[10px] opacity-70">Electron Density & Bond Conformation</div>
+              <div className="text-[11px] font-bold tracking-wider">MOLECULAR ORBITAL</div>
+              <div className="text-[9px] opacity-70">Electron Density & Bond Conformation</div>
             </div>
           </button>
 
@@ -104,16 +196,16 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
           <button
             type="button"
             onClick={() => setSelectedType('particles')}
-            className={`flex items-center gap-3 p-2.5 rounded border transition-all text-left ${
+            className={`flex items-center gap-2.5 p-2 rounded border transition-all text-left ${
               selectedType === 'particles'
-                ? 'bg-hud-cyan/15 border-hud-cyan text-hud-cyan hud-glow-border'
+                ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan hud-glow-border'
                 : 'bg-[rgba(0,20,45,0.4)] border-hud-cyan/10 hover:border-hud-cyan/30 text-hud-muted'
             }`}
           >
-            <Sliders size={16} className={selectedType === 'particles' ? 'text-hud-cyan' : 'text-hud-muted'} />
+            <Sliders size={14} className={selectedType === 'particles' ? 'text-hud-cyan' : 'text-hud-muted'} />
             <div>
-              <div className="text-xs font-bold tracking-wider">N-BODY PARTICLES</div>
-              <div className="text-[10px] opacity-70">Gravitational / Lorentz Field Dynamics</div>
+              <div className="text-[11px] font-bold tracking-wider">N-BODY PARTICLES</div>
+              <div className="text-[9px] opacity-70">Gravitational / Lorentz Dynamics</div>
             </div>
           </button>
         </div>
@@ -127,6 +219,133 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
             System Parameters
           </span>
         </div>
+
+        {selectedType === 'blackhole' && (
+          <div className="space-y-3 text-xs">
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>SOLAR MASS (M_☉)</span>
+                <span className="text-hud-cyan font-bold">{blackholeParams.mass_solar.toFixed(1)} M_☉</span>
+              </div>
+              <input
+                type="range"
+                min="3.0"
+                max="50.0"
+                step="0.5"
+                value={blackholeParams.mass_solar}
+                onChange={(e) =>
+                  setBlackholeParams({ mass_solar: parseFloat(e.target.value) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+            <div className="text-[10px] text-hud-muted/80 bg-black/40 p-2 rounded border border-hud-cyan/10">
+              <div>r_s = {(2.953 * blackholeParams.mass_solar).toFixed(1)} km</div>
+              <div>r_ph = {(4.429 * blackholeParams.mass_solar).toFixed(1)} km</div>
+              <div>b_c = {(7.672 * blackholeParams.mass_solar).toFixed(1)} km</div>
+            </div>
+          </div>
+        )}
+
+        {selectedType === 'aerodynamics' && (
+          <div className="space-y-3 text-xs">
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>AIR TEMPERATURE (°C)</span>
+                <span className="text-hud-cyan font-bold">{aeroParams.temperature_c}°C</span>
+              </div>
+              <input
+                type="range"
+                min="-10.0"
+                max="45.0"
+                step="1.0"
+                value={aeroParams.temperature_c}
+                onChange={(e) =>
+                  setAeroParams({ ...aeroParams, temperature_c: parseFloat(e.target.value) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>FLAPPING FREQUENCY (Hz)</span>
+                <span className="text-hud-cyan font-bold">{aeroParams.frequency_hz} Hz</span>
+              </div>
+              <input
+                type="range"
+                min="6.0"
+                max="25.0"
+                step="0.5"
+                value={aeroParams.frequency_hz}
+                onChange={(e) =>
+                  setAeroParams({ ...aeroParams, frequency_hz: parseFloat(e.target.value) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {selectedType === 'nuclear' && (
+          <div className="space-y-3 text-xs">
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>PROTONS (Z)</span>
+                <span className="text-hud-cyan font-bold">{nuclearParams.protons_z}</span>
+              </div>
+              <input
+                type="range"
+                min="82"
+                max="130"
+                step="1"
+                value={nuclearParams.protons_z}
+                onChange={(e) =>
+                  setNuclearParams({ ...nuclearParams, protons_z: parseInt(e.target.value, 10) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>NEUTRONS (N)</span>
+                <span className="text-hud-cyan font-bold">{nuclearParams.neutrons_n}</span>
+              </div>
+              <input
+                type="range"
+                min="126"
+                max="200"
+                step="1"
+                value={nuclearParams.neutrons_n}
+                onChange={(e) =>
+                  setNuclearParams({ ...nuclearParams, neutrons_n: parseInt(e.target.value, 10) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {selectedType === 'pathogen' && (
+          <div className="space-y-3 text-xs">
+            <div>
+              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
+                <span>INHIBITOR CONCENTRATION (μM)</span>
+                <span className="text-hud-cyan font-bold">{pathogenParams.inhibitor_uM.toFixed(2)} μM</span>
+              </div>
+              <input
+                type="range"
+                min="0.05"
+                max="5.0"
+                step="0.05"
+                value={pathogenParams.inhibitor_uM}
+                onChange={(e) =>
+                  setPathogenParams({ inhibitor_uM: parseFloat(e.target.value) })
+                }
+                className="w-full accent-hud-cyan cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
 
         {selectedType === 'mobius' && (
           <div className="space-y-3 text-xs">
@@ -143,24 +362,6 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
                 value={mobiusParams.twist_factor}
                 onChange={(e) =>
                   setMobiusParams({ ...mobiusParams, twist_factor: parseFloat(e.target.value) })
-                }
-                className="w-full accent-hud-cyan cursor-pointer"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
-                <span>MESH RESOLUTION</span>
-                <span className="text-hud-cyan font-bold">{mobiusParams.resolution}</span>
-              </div>
-              <input
-                type="range"
-                min="16"
-                max="64"
-                step="4"
-                value={mobiusParams.resolution}
-                onChange={(e) =>
-                  setMobiusParams({ ...mobiusParams, resolution: parseInt(e.target.value, 10) })
                 }
                 className="w-full accent-hud-cyan cursor-pointer"
               />
@@ -189,24 +390,6 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
                 <option value="H2">Hydrogen (H2) — Sigma Orbital</option>
               </select>
             </div>
-
-            <div>
-              <div className="flex justify-between text-[11px] text-hud-muted mb-1">
-                <span>ORBITAL LOBE SCALE</span>
-                <span className="text-hud-cyan font-bold">{molecularParams.orbital_scale.toFixed(2)}x</span>
-              </div>
-              <input
-                type="range"
-                min="0.5"
-                max="2.5"
-                step="0.1"
-                value={molecularParams.orbital_scale}
-                onChange={(e) =>
-                  setMolecularParams({ ...molecularParams, orbital_scale: parseFloat(e.target.value) })
-                }
-                className="w-full accent-hud-cyan cursor-pointer"
-              />
-            </div>
           </div>
         )}
 
@@ -228,34 +411,6 @@ export const ExperimentControls: React.FC<ExperimentControlsProps> = ({ simulati
                 }
                 className="w-full accent-hud-cyan cursor-pointer"
               />
-            </div>
-
-            <div>
-              <label className="block text-[11px] text-hud-muted mb-1">FORCE FIELD TENSOR</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setParticleParams({ ...particleParams, force_type: 'gravity' })}
-                  className={`py-1.5 px-2 rounded text-[11px] font-bold border ${
-                    particleParams.force_type === 'gravity'
-                      ? 'bg-hud-cyan/20 border-hud-cyan text-hud-cyan'
-                      : 'bg-black/30 border-hud-cyan/15 text-hud-muted'
-                  }`}
-                >
-                  GRAVITATIONAL
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setParticleParams({ ...particleParams, force_type: 'electromagnetic' })}
-                  className={`py-1.5 px-2 rounded text-[11px] font-bold border ${
-                    particleParams.force_type === 'electromagnetic'
-                      ? 'bg-hud-amber/20 border-hud-amber text-hud-amber'
-                      : 'bg-black/30 border-hud-cyan/15 text-hud-muted'
-                  }`}
-                >
-                  LORENTZ / EM
-                </button>
-              </div>
             </div>
           </div>
         )}

@@ -78,7 +78,15 @@ async def health_check():
         "status": "online",
         "service": "KoeeO Holographic AI Virtual Science Lab",
         "version": "0.1.0",
-        "engines": ["mobius", "molecular", "particles"],
+        "engines": [
+            "mobius",
+            "molecular",
+            "particles",
+            "blackhole",
+            "aerodynamics",
+            "nuclear",
+            "pathogen",
+        ],
         "timestamp": time.time(),
     }
 
@@ -99,6 +107,22 @@ async def list_experiments():
             {
                 "name": "particles",
                 "description": "N-body particle dynamics with gravitational/electromagnetic forces",
+            },
+            {
+                "name": "blackhole",
+                "description": "General Relativity null geodesics, photon sphere (r_ph = 3M), and Hawking temperature",
+            },
+            {
+                "name": "aerodynamics",
+                "description": "Butterfly flapping Navier-Stokes Leading-Edge Vortex (LEV) and unsteady lift augmentation",
+            },
+            {
+                "name": "nuclear",
+                "description": "Bethe-Weizsäcker SEMF nuclear binding & superheavy Island of Stability (Z=120, 126, N=184)",
+            },
+            {
+                "name": "pathogen",
+                "description": "Acinetobacter baumannii Lipid A biosynthesis LpxC active site & antibiotic re-sensitization",
             },
         ],
         "active": simulation_manager.list_experiments(),

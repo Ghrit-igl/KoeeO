@@ -3,7 +3,14 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 /** Supported experiment categories */
-export type ExperimentType = 'mobius' | 'molecular' | 'particles';
+export type ExperimentType =
+  | 'mobius'
+  | 'molecular'
+  | 'particles'
+  | 'blackhole'
+  | 'aerodynamics'
+  | 'nuclear'
+  | 'pathogen';
 
 /** Experiment status lifecycle */
 export type ExperimentStatus = 'pending' | 'running' | 'completed' | 'error';
@@ -30,8 +37,37 @@ export interface ParticleParams {
   softening: number;
 }
 
+/** Black hole relativistic geodesics parameters */
+export interface BlackHoleParams {
+  mass_solar: number;
+}
+
+/** Butterfly Navier-Stokes aerodynamics parameters */
+export interface AerodynamicsParams {
+  temperature_c: number;
+  frequency_hz: number;
+}
+
+/** Nuclear SEMF and Island of Stability parameters */
+export interface NuclearParams {
+  protons_z: number;
+  neutrons_n: number;
+}
+
+/** Pathogen LpxC inhibitor discovery parameters */
+export interface PathogenParams {
+  inhibitor_uM: number;
+}
+
 /** Union of all parameter types */
-export type ExperimentParams = MobiusParams | MolecularParams | ParticleParams;
+export type ExperimentParams =
+  | MobiusParams
+  | MolecularParams
+  | ParticleParams
+  | BlackHoleParams
+  | AerodynamicsParams
+  | NuclearParams
+  | PathogenParams;
 
 /** Experiment entity returned by the backend API */
 export interface Experiment {
@@ -77,6 +113,29 @@ export interface TelemetryFrame {
   // Particle-specific
   positions?: number[];
   velocities?: number[];
+
+  // Black hole-specific
+  metrics?: any;
+  rays?: any[];
+  disk_particles?: number[];
+  event_horizon_radius?: number;
+  photon_sphere_radius?: number;
+  hawking_temp_nK?: number;
+
+  // Aerodynamics-specific
+  flapping_angle_deg?: number;
+  reynolds_number?: number;
+  lift_coefficient?: number;
+  drag_coefficient?: number;
+  lev_contribution?: number;
+  lev_streamlines?: number[];
+
+  // Nuclear-specific
+  nucleons?: any[];
+
+  // Pathogen-specific
+  kinetics?: any;
+  active_site_atoms?: any[];
 
   fps?: number;
 }
