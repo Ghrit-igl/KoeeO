@@ -1,0 +1,10 @@
+[package]
+name = "koeeo_engine"
+version = "1.0.0"
+edition = "2021"
+authors = ["Minato95-ayu (Ayush Ghrit Kaushik)", "KoeeO Advanced Engineering"]
+description = "Superfast Rust & AAYU Procedural Science & CAD Reality Engine"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

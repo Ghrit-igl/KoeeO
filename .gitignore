@@ -9,8 +9,14 @@ venv/
 dist/
 build/
 
+# Rust / Cargo
+target/
+crates/target/
+**/target/
+
 # Node / Frontend
 node_modules/
+**/node_modules/
 packages/frontend/dist/
 .vite/
 
